@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Журнал уроков — Долич В. Е.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand"><span class="brand-mark">Д</span><span>Учебный журнал</span></div>
+      <nav class="main-nav" aria-label="Разделы">
+        <button class="nav-item active" data-view="journal"><span>▦</span> Журнал уроков</button>
+        <button class="nav-item" data-view="week"><span>□</span> Недельный обзор</button>
+        <button class="nav-item" data-view="month"><span>◫</span> Месячный обзор</button>
+        <button class="nav-item" data-view="schedule"><span>☷</span> Расписание</button>
+      </nav>
+      <div class="teacher-card">
+        <div class="avatar">ДВ</div><div><strong>Долич В. Е.</strong><small>Учитель информатики</small></div>
+      </div>
+    </aside>
+
+    <main class="content">
+      <header class="topbar">
+        <div><p class="eyebrow" id="todayLabel">РАБОЧАЯ ПАНЕЛЬ</p><h1 id="viewTitle">Журнал уроков</h1></div>
+        <div class="top-actions"><button class="icon-btn" id="printBtn" title="Печатный вид">⌘</button><button class="btn secondary" id="exportBtn">↓ Экспорт CSV</button><button class="btn primary" id="addBtn">＋ Добавить запись</button></div>
+      </header>
+
+      <section id="journalView" class="view active">
+        <section class="stats" aria-label="Статистика">
+          <article class="stat-card"><span class="stat-icon green">✓</span><div><span>Проведено</span><strong id="doneCount">0</strong><small id="doneHint">за выбранный период</small></div></article>
+          <article class="stat-card"><span class="stat-icon orange">◷</span><div><span>Ожидают отчёта</span><strong id="pendingCount">0</strong><small id="pendingHint">по расписанию</small></div></article>
+          <article class="stat-card"><span class="stat-icon red">!</span><div><span>Не проведено</span><strong id="missedCount">0</strong><small>требуют внимания</small></div></article>
+          <article class="stat-card"><span class="stat-icon blue">▥</span><div><span>Всего уроков</span><strong id="totalCount">0</strong><small id="totalHint">за выбранный период</small></div></article>
+        </section>
+
+        <section class="toolbar">
+          <div class="date-nav"><button class="square-btn" id="prevDay" aria-label="Предыдущий день">‹</button><input type="date" id="datePicker" aria-label="Дата"/><button class="square-btn" id="nextDay" aria-label="Следующий день">›</button><button class="today-btn" id="todayBtn">Сегодня</button></div>
+          <div class="filters"><label class="search"><span>⌕</span><input id="searchInput" placeholder="Поиск по теме или заметкам" /></label><select id="classFilter"><option value="">Все классы</option></select><select id="subjectFilter"><option value="">Все предметы</option><option>Информатика</option><option>Шахматы</option></select><select id="statusFilter"><option value="">Все статусы</option><option value="done">Проведён</option><option value="not-done">Не проведён</option><option value="moved">Перенесён</option><option value="pending">Ожидает отчёта</option></select></div>
+        </section>
+        <p class="date-heading" id="dateHeading"></p>
+        <section id="lessonsList" class="lessons-list" aria-live="polite"></section>
+        <section id="emptyState" class="empty-state" hidden><div>◌</div><h2>На этот день уроков нет</h2><p>Выберите другую дату или добавьте запись вручную.</p></section>
+      </section>
+
+      <section id="weekView" class="view"><div class="overview-header"><div><h2>Неделя</h2><p id="weekRange"></p></div><div class="date-nav"><button class="square-btn" id="prevWeek">‹</button><button class="today-btn" id="weekToday">Текущая неделя</button><button class="square-btn" id="nextWeek">›</button></div></div><div id="weekGrid" class="week-grid"></div></section>
+      <section id="monthView" class="view"><div class="overview-header"><div><h2>Месяц</h2><p id="monthLabel"></p></div><div class="date-nav"><button class="square-btn" id="prevMonth">‹</button><button class="today-btn" id="monthToday">Текущий месяц</button><button class="square-btn" id="nextMonth">›</button></div></div><div class="month-layout"><section id="calendar" class="calendar"></section><section class="month-summary"><h3>Итоги месяца</h3><div id="monthStats"></div><hr><h3>По предметам</h3><div id="subjectStats"></div></section></div></section>
+      <section id="scheduleView" class="view"><div class="overview-header"><div><h2>Расписание</h2><p>Постоянные уроки на учебную неделю</p></div><button class="btn primary" id="scheduleAddBtn">＋ Урок</button></div><div class="schedule-note">Изменения сохраняются на этом устройстве и сразу отражаются в журнале.</div><div id="scheduleGrid" class="schedule-grid"></div></section>
+    </main>
+  </div>
+
+  <dialog id="lessonDialog" class="dialog"><form id="lessonForm" method="dialog"><div class="dialog-head"><div><p class="eyebrow">ОТЧЁТ ПО УРОКУ</p><h2 id="dialogTitle">Урок</h2></div><button type="button" class="icon-btn close-dialog">×</button></div><input type="hidden" id="recordId"/><div class="form-grid"><label>Дата<input class="form-control" type="date" id="formDate" required></label><label>Время<input class="form-control" id="formTime" placeholder="10:50" required></label><label>Класс<input class="form-control" id="formClass" placeholder="Например, 5А" required></label><label>Предмет<select class="form-control" id="formSubject"><option>Информатика</option><option>Шахматы</option></select></label><label>Статус<select class="form-control" id="formStatus"><option value="pending">Ожидает отчёта</option><option value="done">Проведён</option><option value="not-done">Не проведён</option><option value="moved">Перенесён</option></select></label><label class="checkbox-label"><input type="checkbox" id="formAssessment"> Контрольная / оценивание</label></div><label>Тема урока<input class="form-control" id="formTopic" placeholder="Например, Алгоритмы и исполнители"></label><label>Домашнее задание<textarea class="form-control" id="formHomework" rows="2" placeholder="Что нужно выполнить ученикам"></textarea></label><label>Заметки<textarea class="form-control" id="formNotes" rows="2" placeholder="Короткая заметка для себя"></textarea></label><div class="dialog-actions"><button type="button" class="btn secondary close-dialog">Отмена</button><button type="submit" class="btn primary">Сохранить отчёт</button></div></form></dialog>
+  <dialog id="scheduleDialog" class="dialog small"><form id="scheduleForm" method="dialog"><div class="dialog-head"><h2 id="scheduleDialogTitle">Урок в расписании</h2><button type="button" class="icon-btn close-schedule">×</button></div><input type="hidden" id="scheduleId"/><div class="form-grid"><label>День недели<select class="form-control" id="scheduleDay"><option value="1">Понедельник</option><option value="2">Вторник</option><option value="3">Среда</option><option value="4">Четверг</option><option value="5">Пятница</option></select></label><label>Время<input class="form-control" id="scheduleTime" placeholder="10:50" required></label><label>Класс<input class="form-control" id="scheduleClass" required></label><label>Предмет<select class="form-control" id="scheduleSubject"><option>Информатика</option><option>Шахматы</option></select></label></div><div class="dialog-actions"><button type="button" id="deleteScheduleBtn" class="btn danger">Удалить</button><span></span><button type="button" class="btn secondary close-schedule">Отмена</button><button type="submit" class="btn primary">Сохранить</button></div></form></dialog>
+  <div id="toast" class="toast" role="status"></div>
+  <script src="app.js"></script>
+</body>
+</html>
